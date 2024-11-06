@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const { CreateUserDto, LoginUserDto, LoggedInUserResponseDto, UserDto} = require("../dtos/user-dto");
+const { basicEncode } = require('../auth');
 
 const userEndpoints = (db) => {
     // Endpoint do tworzenia użytkownika
@@ -38,7 +38,7 @@ const userEndpoints = (db) => {
             });
         } catch (error) {
             console.error('Błąd podczas haszowania hasła:', error);
-            res.status(500).json({ error: 'Wystąpił błąd podczas rejestracji.' });
+            res.status(500).send('Wystąpił błąd podczas rejestracji.');
         }
     }
 
@@ -56,20 +56,20 @@ const userEndpoints = (db) => {
 
         db.get(sql, [loginUserDto.email], async (err, user) => {
             if (err) {
-                return res.status(400).json({ error: err.message });
+                return res.status(400).send(err.message);
             }
             if (!user) {
-                return res.status(401).json({ error: 'Nieprawidłowy email lub hasło.' });
+                return res.status(401).send('Nieprawidłowy email lub hasło.');
             }
 
             const isMatch = await bcrypt.compare(loginUserDto.password, user.password_hash);
 
             if (!isMatch) {
-                return res.status(401).json({ error: 'Nieprawidłowy email lub hasło.' });
+                return res.status(401).send('Nieprawidłowy email lub hasło.');
             }
 
-            const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-            const responseDto = new LoggedInUserResponseDto({ token, user: { id: user.id, username: user.username, email: user.email, role: user.role }})
+            const basic = basicEncode(user.id, user.role);
+            const responseDto = new LoggedInUserResponseDto({ basic, user: { id: user.id, username: user.username, email: user.email, role: user.role }})
 
             try {
                 res.status(200).json(responseDto);
@@ -91,7 +91,7 @@ const userEndpoints = (db) => {
 
         db.run(sql, [userEmailToDelete], function(err) {
             if (err) {
-                return res.status(400).json({ error: err.message });
+                return res.status(400).send(err.message);
             }
 
             if (this.changes === 0) {

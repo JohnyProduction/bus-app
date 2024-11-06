@@ -74,16 +74,16 @@ class UserDto extends Dto {
 }
 
 class LoggedInUserResponseDto extends Dto {
-    constructor({ token, user }) {
+    constructor({ basic, user }) {
         super();
 
-        this.token = token;
+        this.basic = basic;
         this.user = new UserDto(user);
     }
 
     validate() {
-        if (!this.token) {
-            throw new Error('Brak tokenu');
+        if (!this.basic) {
+            throw new Error('Brak zakodowanej wartości');
         }
 
         try {
