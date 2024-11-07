@@ -1,6 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./database.db');
 const RouteStop = require('../models/routeStop');
+const {DepartureRequestDto, DepartureResponseDto} = require("../dtos/departureDto");
 
 class RouteStopRepository {
 
@@ -56,6 +57,43 @@ class RouteStopRepository {
         return callback(err);
       }
       callback(null, { message: `Route stop with ID ${id} deleted` });
+    });
+  }
+
+  getAllStopsFromTo(fromId, toId, callback) {
+    const sql = `
+          WITH RECURSIVE route_path AS (
+              SELECT 
+                  rs.id AS route_stop_id,
+                  rs.previous,
+                  rs.next,
+                  rs.stop_id,
+                  rs.minutes_from_prev_route_stop,
+                  rs.prize_from_prev_route_stop
+              FROM route_stop rs
+              WHERE rs.stop_id = ?
+          
+              UNION ALL
+          
+              SELECT 
+                  rs.id AS route_stop_id,
+                  rs.previous,
+                  rs.next,
+                  rs.stop_id,
+                  rs.minutes_from_prev_route_stop,
+                  rs.prize_from_prev_route_stop
+              FROM route_stop rs
+              JOIN route_path rp ON rp.next = rs.id
+              WHERE rs.stop_id != ?
+          )
+          
+          SELECT *
+          FROM route_path
+          WHERE stop_id = ?;
+      `;
+
+    db.run(sql, [fromId, fromId, toId], (err, data) => {
+     callback(err, data);
     });
   }
 }

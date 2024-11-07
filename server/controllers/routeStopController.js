@@ -1,5 +1,6 @@
 const RouteStopRepository = require('../repositories/routeStopRepository');
 const RouteStop = require('../models/routeStop');
+const {DepartureResponseDto, DepartureRequestDto} = require("../dtos/departureDto");
 const repository = new RouteStopRepository();
 
 const getStopById = (req, res) => {
@@ -41,10 +42,31 @@ const deleteStop = (req, res) => {
   });
 };
 
+const getAllStopsFromTo = (req, res) => {
+  const requestDto = new DepartureRequestDto(req.body);
+
+  try {
+    requestDto.validate();
+  } catch (err) {
+    throw err;
+  }
+
+  repository.getAllStopsFromTo(requestDto.from, requestDto.to, (err, data) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    const departureResponseDto = new DepartureResponseDto(data);
+
+    return res.status(200).json(departureResponseDto);
+  });
+}
+
 module.exports = {
   getStopById,
   getAllStops,
   addStop,
   updateStop,
-  deleteStop
+  deleteStop,
+  getAllStopsFromTo
 };

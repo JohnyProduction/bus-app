@@ -1,6 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./database.db');
 const User = require('../models/user');
+const bcrypt = require("bcryptjs");
 
 class UserRepository {
 
@@ -14,7 +15,7 @@ class UserRepository {
         const user = new User(row.username, row.email, row.password_hash, row.role);
         callback(null, user);
       } else {
-        callback(null, null); 
+        callback(null, null);
       }
     });
   }
@@ -36,7 +37,7 @@ class UserRepository {
       if (err) {
         return callback(err);
       }
-      callback(null, { username: user.username, email: user.email, role: user.role });
+      callback(null, { id: user.id, username: user.username, email: user.email, role: user.role });
     });
   }
 
@@ -57,6 +58,18 @@ class UserRepository {
         return callback(err);
       }
       callback(null, { message: `User ${username} deleted` });
+    });
+  }
+
+  loginUser(email, password, callback) {
+    const sql = `SELECT * FROM user WHERE email = ?`;
+
+    db.get(sql, [email], async (err, user) => {
+      if (err) {
+        return callback(err, null);
+      }
+
+      callback(null, user);
     });
   }
 }
