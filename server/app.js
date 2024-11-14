@@ -3,14 +3,16 @@ const { departureEndpoints } = require('./routes/departure');
 const { authenticateToken } = require('./auth');
 const { db } = require('./db');
 
+const cors = require('cors');
 const express = require('express');
 const app = express();
-const PORT = 3000;
+const PORT = 3003;
 
 const dotenv = require('dotenv');
 dotenv.config('.');
 
 app.use(express.json());
+app.use(cors());
 
 // User endpoints
 const { newUser, login, deleteUser, getUserEmail, getUserNick } = userEndpoints(db);

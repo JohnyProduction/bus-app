@@ -46,31 +46,38 @@ const userEndpoints = (db) => {
     const login = async (req, res) => {
         const loginUserDto = new LoginUserDto(req.body);
 
+        // Validate incoming request data
         try {
             loginUserDto.validate();
         } catch (err) {
             return res.status(400).send(err.message);
         }
-
+    
         const sql = `SELECT * FROM user WHERE email = ?`;
-
+        
         db.get(sql, [loginUserDto.email], async (err, user) => {
             if (err) {
                 return res.status(400).send(err.message);
             }
             if (!user) {
-                return res.status(401).send('Nieprawidłowy email lub hasło.');
+                return res.status(401).send('Invalid email or password.');
             }
-
+    
+            // Compare the hashed password
             const isMatch = await bcrypt.compare(loginUserDto.password, user.password_hash);
-
             if (!isMatch) {
-                return res.status(401).send('Nieprawidłowy email lub hasło.');
+                return res.status(401).send('Invalid email or password.');
             }
-
-            const basic = basicEncode(user.id, user.role);
-            const responseDto = new LoggedInUserResponseDto({ basic, user: { id: user.id, username: user.username, email: user.email, role: user.role }})
-
+    
+            // Generate token using basicEncode with user ID and role
+            const token = basicEncode(user.id, user.role);
+    
+            // Create a response DTO including the token and user details
+            const responseDto = new LoggedInUserResponseDto({
+                token,
+                user: { id: user.id, username: user.username, email: user.email, role: user.role }
+            });
+    
             try {
                 res.status(200).json(responseDto);
             } catch (err) {
