@@ -1,5 +1,5 @@
 const {CreateRouteDto, RouteDto} = require("../dtos/route-dto");
-const {UserDto} = require("../dtos/user-dto");
+
 const routeEndpoints = (db) => {
     const getFilteredRoutesByCarrier = (req, res) => {
         const { carrierId } = req.params;
