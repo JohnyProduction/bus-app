@@ -1,4 +1,3 @@
-
 const busEndpoints = (db) => {
     const getBusById = (req, res) => {
         const { id } = req.params;
@@ -64,6 +63,44 @@ const busEndpoints = (db) => {
         });
     };
 
+    const patchBus = (req, res) => {
+        const { id } = req.params;
+        const { bus_number, capacity, model } = req.body;
+
+        const fields = [];
+        const values = [];
+
+        if (bus_number) {
+            fields.push('bus_number = ?');
+            values.push(bus_number);
+        }
+        if (capacity) {
+            fields.push('capacity = ?');
+            values.push(capacity);
+        }
+        if (model) {
+            fields.push('model = ?');
+            values.push(model);
+        }
+
+        if (fields.length === 0) {
+            return res.status(400).send('Brak pól do zaktualizowania.');
+        }
+
+        const sql = `UPDATE buses SET ${fields.join(', ')} WHERE id = ?`;
+        values.push(id);
+
+        db.run(sql, values, function (err) {
+            if (err) {
+                return res.status(400).send(err.message);
+            }
+            if (this.changes === 0) {
+                return res.status(404).send('Nie znaleziono autobusu do zaktualizowania.');
+            }
+            res.status(200).send('Zaktualizowano autobus.');
+        });
+    };
+
     const deleteBus = (req, res) => {
         const { id } = req.params;
         const sql = `DELETE FROM buses WHERE id = ?`;
@@ -79,7 +116,7 @@ const busEndpoints = (db) => {
         });
     };
 
-    return { getBusById, getBuses, newBus, updateBus, deleteBus };
+    return { getBusById, getBuses, newBus, updateBus, patchBus, deleteBus };
 };
 
 module.exports = { busEndpoints };

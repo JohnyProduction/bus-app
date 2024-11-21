@@ -63,6 +63,40 @@ const activeDateSpanRoutes = (db) => {
         });
     };
 
+    const patchActiveDateSpan = (req, res) => {
+        const { id } = req.params;
+        const { start_date, end_date } = req.body;
+
+        const fields = [];
+        const values = [];
+
+        if (start_date) {
+            fields.push('start_date = ?');
+            values.push(start_date);
+        }
+        if (end_date) {
+            fields.push('end_date = ?');
+            values.push(end_date);
+        }
+
+        if (fields.length === 0) {
+            return res.status(400).send('Brak pól do zaktualizowania.');
+        }
+
+        const sql = `UPDATE active_date_spans SET ${fields.join(', ')} WHERE id = ?`;
+        values.push(id);
+
+        db.run(sql, values, function (err) {
+            if (err) {
+                return res.status(400).send(err.message);
+            }
+            if (this.changes === 0) {
+                return res.status(404).send('Nie znaleziono zakresu dat do zaktualizowania.');
+            }
+            res.status(200).send('Zaktualizowano zakres dat.');
+        });
+    };
+
     const deleteActiveDateSpan = (req, res) => {
         const { id } = req.params;
         const sql = `DELETE FROM active_date_spans WHERE id = ?`;
@@ -78,7 +112,7 @@ const activeDateSpanRoutes = (db) => {
         });
     };
 
-    return { getActiveDateSpansById, getActiveDateSpans, newActiveDateSpans, updateActiveDateSpan, deleteActiveDateSpan };
+    return { getActiveDateSpansById, getActiveDateSpans, newActiveDateSpans, updateActiveDateSpan, patchActiveDateSpan, deleteActiveDateSpan };
 };
 
 module.exports = { activeDateSpanRoutes };
