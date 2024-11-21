@@ -52,9 +52,9 @@ const userEndpoints = (db) => {
         } catch (err) {
             return res.status(400).send(err.message);
         }
-    
+
         const sql = `SELECT * FROM user WHERE email = ?`;
-        
+
         db.get(sql, [loginUserDto.email], async (err, user) => {
             if (err) {
                 return res.status(400).send(err.message);
@@ -62,22 +62,22 @@ const userEndpoints = (db) => {
             if (!user) {
                 return res.status(401).send('Invalid email or password.');
             }
-    
+
             // Compare the hashed password
             const isMatch = await bcrypt.compare(loginUserDto.password, user.password_hash);
             if (!isMatch) {
                 return res.status(401).send('Invalid email or password.');
             }
-    
+
             // Generate token using basicEncode with user ID and role
             const token = basicEncode(user.id, user.role);
-    
+
             // Create a response DTO including the token and user details
             const responseDto = new LoggedInUserResponseDto({
                 token,
                 user: { id: user.id, username: user.username, email: user.email, role: user.role }
             });
-    
+
             try {
                 res.status(200).json(responseDto);
             } catch (err) {
@@ -155,7 +155,25 @@ const userEndpoints = (db) => {
         });
     };
 
-    return { newUser, login, deleteUser, getUserEmail, getUserNick };
+    // Endpoint for filtering user
+    const getFilteredUsers = async (req, res) => {
+        const { nameFilter } = req.params;
+        let sql = 'SELECT username, email FROM users';
+
+        if (nameFilter) {
+            sql += ` WHERE username LIKE ${nameFilter}%`;
+        }
+
+        db.get(sql, [], (err, users) => {
+            if (err) {
+                return res.status(400).send(err.message);
+            }
+
+            res.status(200).json({ users: users ?? [] });
+        });
+    };
+
+    return { newUser, login, deleteUser, getUserEmail, getUserNick, getFilteredUsers };
 };
 
 module.exports = { userEndpoints };
