@@ -133,7 +133,18 @@ const routeEndpoints = (db) => {
         });
     };
 
-    const deleteRoute = (req, res) => {};
+    const deleteRoute = (req, res) => {
+        const { id } = req.params;
+        const sql = `DELETE route WHERE id = ${id};`;
+
+        db.run(sql, function(err, data) {
+            if (err) {
+                return res.status(400).send(err.message);
+            }
+
+            return res.status(204).send();
+        });
+    };
 
     return { getFilteredRoutesByCarrier, newRoute, replaceRoute, updateRoute, deleteRoute };
 };
