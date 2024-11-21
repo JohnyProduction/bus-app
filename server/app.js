@@ -1,6 +1,7 @@
 const { userEndpoints } = require('./routes/user');
 const { departureEndpoints } = require('./routes/departure');
 const { routeEndpoints } = require('./routes/route');
+const { busEndpoints } = require('./routes/bus');
 const { authenticateToken } = require('./auth');
 const { db } = require('./db');
 
@@ -35,6 +36,14 @@ app.post('/route', newRoute);
 app.put('/route/:id', replaceRoute);
 app.patch('/route/:id', updateRoute);
 app.delete('/route/:id', deleteRoute);
+
+// Bus endpoints
+const { getBusById, getBuses, newBus, updateBus, deleteBus } = busEndpoints(db);
+app.get('/buses/:id', getBusById);
+app.get('/buses', getBuses);
+app.post('/buses', newBus);
+app.put('/buses/:id', updateBus);
+app.delete('/buses/:id', deleteBus);
 
 app.listen(PORT, () => {
     console.log(`Serwer nasłuchuje na porcie ${PORT}`);
