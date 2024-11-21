@@ -2,6 +2,7 @@ const { userEndpoints } = require('./routes/user');
 const { departureEndpoints } = require('./routes/departure');
 const { routeEndpoints } = require('./routes/route');
 const { busEndpoints } = require('./routes/bus');
+const { activeDateSpanRoutes } = require('./routes/activeDateSpanRoutes');
 const { authenticateToken } = require('./auth');
 const { db } = require('./db');
 
@@ -44,6 +45,13 @@ app.get('/buses', getBuses);
 app.post('/buses', newBus);
 app.put('/buses/:id', updateBus);
 app.delete('/buses/:id', deleteBus);
+
+const { getActiveDateSpansById, getActiveDateSpans, newActiveDateSpans, updateActiveDateSpan, deleteActiveDateSpan } = activeDateSpanRoutes(db);
+app.get('/active-date-spans/:id', getActiveDateSpansById);
+app.get('/active-date-spans', getActiveDateSpans);
+app.post('/active-date-spans', newActiveDateSpans);
+app.put('/active-date-spans/:id', updateActiveDateSpan);
+app.delete('/active-date-spans/:id', deleteActiveDateSpan);
 
 app.listen(PORT, () => {
     console.log(`Serwer nasłuchuje na porcie ${PORT}`);
