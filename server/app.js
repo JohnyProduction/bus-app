@@ -29,8 +29,12 @@ const { fromToDeparture } = departureEndpoints(db);
 app.get('/departure', fromToDeparture);
 
 // Route endpoints
-const { getFilteredRoutesByCarrier } = routeEndpoints(db);
+const { getFilteredRoutesByCarrier, newRoute, replaceRoute, updateRoute, deleteRoute } = routeEndpoints(db);
 app.get('/route/:carrierId', getFilteredRoutesByCarrier);
+app.post('/route', newRoute);
+app.put('/route/:id', replaceRoute);
+app.patch('/route/:id', updateRoute);
+app.delete('/route/:id', deleteRoute);
 
 app.listen(PORT, () => {
     console.log(`Serwer nasłuchuje na porcie ${PORT}`);
