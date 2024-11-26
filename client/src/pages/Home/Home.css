@@ -1,0 +1,57 @@
+/* Ogólna kontenerka */
+.userview_container {
+  margin: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Nagłówek */
+.userview_title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Pole wyszukiwania */
+.userview_search-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Lista autobusów */
+.userview_bus-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Element listy */
+.userview_bus-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s;
+}
+
+/* Zmiana tła na hover */
+.userview_bus-item:hover {
+  background-color: #eaeaea;
+}
+
+/* Czas autobusu */
+.userview_bus-time {
+  font-weight: bold;
+  color: #555;
+}
+
+/* Miasto docelowe */
+.userview_bus-destination {
+  color: #007bff;
+}
