@@ -1,4 +1,5 @@
 const { userEndpoints } = require('./routes/user');
+const { userObservesCityConnectionEndpoints } = require('./routes/user-observes-city-connection');
 const { departureEndpoints } = require('./routes/departure');
 const { authenticateToken } = require('./auth');
 const { db } = require('./db');
@@ -21,6 +22,11 @@ app.post('/user/login', login);
 app.delete('/user/:email', authenticateToken, deleteUser);
 app.get('/user/email', getUserEmail);
 app.get('/user/nick', getUserNick);
+
+// User observes city connection
+const { observeCityConnection, unobserveCityConnection } = userObservesCityConnectionEndpoints(db);
+app.post('/user/observe-city-observation', authenticateToken, observeCityConnection);
+app.post('/user/unobserve-city-observation', authenticateToken, unobserveCityConnection);
 
 // Departure endpoints
 const { fromToDeparture } = departureEndpoints(db);
