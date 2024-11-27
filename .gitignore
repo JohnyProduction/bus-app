@@ -28,3 +28,8 @@ server/database/*.sqlite3
 **/*.swp
 **/*.swo
 .DS_Store
+
+# node
+server/package-lock.json
+server/package.json
+server/node_modules/.package-lock.json
