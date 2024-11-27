@@ -1,0 +1,4 @@
+# Database files
+server/database/*.db
+server/database/*.sqlite
+server/database/*.sqlite3
