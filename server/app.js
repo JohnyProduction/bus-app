@@ -1,6 +1,7 @@
 const { userEndpoints } = require('./routes/user');
 const { departureEndpoints } = require('./routes/departure');
 const { authenticateToken } = require('./auth');
+const { connectionEndpoints } = require('./routes/connection');
 const { db } = require('./db');
 
 const cors = require('cors');
@@ -21,6 +22,10 @@ app.post('/user/login', login);
 app.delete('/user/:email', authenticateToken, deleteUser);
 app.get('/user/email', getUserEmail);
 app.get('/user/nick', getUserNick);
+
+// Connection endpoints
+const { search } = connectionEndpoints(db);
+app.get('/connections/search', search);
 
 // Departure endpoints
 const { fromToDeparture } = departureEndpoints(db);
