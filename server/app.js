@@ -25,8 +25,8 @@ app.get('/user/nick', getUserNick);
 
 // User observes city connection
 const { observeCityConnection, unobserveCityConnection } = userObservesCityConnectionEndpoints(db);
-app.post('/user/observe-city-observation', authenticateToken, observeCityConnection);
-app.post('/user/unobserve-city-observation', authenticateToken, unobserveCityConnection);
+app.post('/user/observe-city-connection', authenticateToken, observeCityConnection);
+app.post('/user/unobserve-city-connection', authenticateToken, unobserveCityConnection);
 
 // Departure endpoints
 const { fromToDeparture } = departureEndpoints(db);
