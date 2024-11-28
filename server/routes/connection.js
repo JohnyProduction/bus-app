@@ -71,7 +71,7 @@ const connectionEndpoints = (db) => {
                     JOIN city c_end ON s_end.city_id = c_end.id
                     WHERE c_start.name = ? AND c_end.name = ?
                 `, [searchDto.startCity, searchDto.endCity]);
-                
+
                 console.log('Route check results:', routeCheck);
 
                 // Check date rules
@@ -110,9 +110,47 @@ const connectionEndpoints = (db) => {
         }
     };
 
-    return {
-        search
+    const searchAll = async (req, res) => {
+        try {
+            console.log('Received search request:', req.query);
+
+            // Validate input with DTO
+            const startCity = req.query;
+
+            // First check if cities exist
+            const citiesQuery = `SELECT id, name FROM city WHERE name IN (?)`;
+            const cities = await runQuery(db, citiesQuery, [startCity]);
+
+            // Load the main search query
+            const searchQueryFile = await fs.readFile(
+                path.join(__dirname, '../queries/search_connections.sql'),
+                'utf-8'
+            );
+
+            // Run the main search query
+            const connections = await runQuery(db, searchQueryFile, {
+                ':start_city_name': startCity
+            });
+
+            console.log(`Found ${connections.length} connections`);
+
+            const responseDto = {
+                totalConnections: connections.length,
+                connections: connections
+            };
+
+            res.json(responseDto);
+
+        } catch (error) {
+            console.error('Error in connection search:', error);
+            res.status(error.status || 500).json({
+                error: error.message || 'Nieoczekiwany błąd serwera',
+                details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            });
+        }
     };
+
+    return { search, searchAll };
 };
 
 module.exports = { connectionEndpoints };

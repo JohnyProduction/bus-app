@@ -30,8 +30,9 @@ app.post('/user/observe-city-connection', authenticateToken, observeCityConnecti
 app.post('/user/unobserve-city-connection', authenticateToken, unobserveCityConnection);
 
 // Connection endpoints
-const { search } = connectionEndpoints(db);
+const { search, searchAll } = connectionEndpoints(db);
 app.get('/connections/search', search);
+app.get('/connections/search/all', searchAll);
 
 // Departure endpoints
 const { fromToDeparture } = departureEndpoints(db);
