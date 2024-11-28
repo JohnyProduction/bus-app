@@ -107,6 +107,6 @@ CREATE TABLE user_observes_city_connection (
   departure_city_id INTEGER NOT NULL, -- CHANGED as it didnt point at PK
   destination_city_id INTEGER NOT NULL, -- CHANGED as it didnt point at PK
   FOREIGN KEY (username) REFERENCES user(username),
-  FOREIGN KEY (departure_city) REFERENCES city(id),    
-  FOREIGN KEY (destination_city) REFERENCES city(id)
+  FOREIGN KEY (departure_city_id) REFERENCES city(id),    
+  FOREIGN KEY (destination_city_id) REFERENCES city(id)
 );

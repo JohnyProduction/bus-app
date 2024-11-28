@@ -2,6 +2,7 @@ const { userEndpoints } = require('./routes/user');
 const { userObservesCityConnectionEndpoints } = require('./routes/user-observes-city-connection');
 const { departureEndpoints } = require('./routes/departure');
 const { authenticateToken } = require('./auth');
+const { connectionEndpoints } = require('./routes/connection');
 const { db } = require('./db');
 
 const cors = require('cors');
@@ -27,6 +28,10 @@ app.get('/user/nick', getUserNick);
 const { observeCityConnection, unobserveCityConnection } = userObservesCityConnectionEndpoints(db);
 app.post('/user/observe-city-connection', authenticateToken, observeCityConnection);
 app.post('/user/unobserve-city-connection', authenticateToken, unobserveCityConnection);
+
+// Connection endpoints
+const { search } = connectionEndpoints(db);
+app.get('/connections/search', search);
 
 // Departure endpoints
 const { fromToDeparture } = departureEndpoints(db);
