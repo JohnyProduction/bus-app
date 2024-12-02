@@ -1,7 +1,12 @@
 /* Ogólna kontenerka */
+.userview_box{
+  display: flex;
+  justify-content: center;
+}
 .userview_container {
   margin: 20px;
   font-family: Arial, sans-serif;
+  max-width: 80%;
 }
 
 /* Nagłówek */
@@ -21,6 +26,21 @@
   border-radius: 4px;
 }
 
+/* Przycisk wyszukiwania */
+.userview_search-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.userview_search-button:hover {
+  background-color: #0056b3;
+}
+
 /* Lista autobusów */
 .userview_bus-list {
   list-style-type: none;
@@ -31,9 +51,9 @@
 /* Element listy */
 .userview_bus-item {
   display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  margin-bottom: 5px;
+  flex-direction: column;
+  padding: 15px;
+  margin-bottom: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: #f9f9f9;
@@ -45,13 +65,80 @@
   background-color: #eaeaea;
 }
 
-/* Czas autobusu */
-.userview_bus-time {
+/* Nagłówek połączenia */
+.userview_bus-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+/* Nazwa przewoźnika */
+.userview_bus-carrier {
+  font-size: 18px;
   font-weight: bold;
+  color: #333;
+}
+
+/* Cena biletu */
+.userview_bus-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #28a745;
+}
+
+/* Sekcja szczegółów */
+.userview_bus-section {
+  margin-bottom: 10px;
+}
+
+.userview_bus-section h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.userview_bus-section p {
+  margin: 2px 0;
+  font-size: 14px;
   color: #555;
 }
 
-/* Miasto docelowe */
-.userview_bus-destination {
-  color: #007bff;
+/* Odjazd za */
+.userview_bus-details p strong {
+  font-size: 14px;
+  color: #333;
+}
+/* Paginacja */
+.userview_pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.userview_pagination-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  margin: 0 5px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.userview_pagination-button:hover {
+  background-color: #0056b3;
+}
+
+.userview_pagination-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.userview_pagination-info {
+  font-size: 14px;
+  color: #333;
+  margin: 0 10px;
 }
