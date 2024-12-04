@@ -30,6 +30,4 @@ server/database/*.sqlite3
 .DS_Store
 
 # node
-server/package-lock.json
-server/package.json
 server/node_modules/.package-lock.json
