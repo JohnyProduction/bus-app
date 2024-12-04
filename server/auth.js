@@ -16,8 +16,8 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-const basicEncode = (userId, userRole) => {
-    const userString = `${userId}:${userRole}`;
+const basicEncode = (userId, userRole, userUsername) => {
+    const userString = `${userId}:${userRole}:${userUsername}`;
     const encodedUser = Buffer.from(userString).toString('base64');
 
     return encodedUser;
@@ -25,9 +25,9 @@ const basicEncode = (userId, userRole) => {
 
 const basicDecode = (encodedUser) => {
     const decodedUser = Buffer.from(encodedUser, 'base64').toString('utf-8');
-    const [id, role] = decodedUser.split(':');
+    const [id, role, username] = decodedUser.split(':');
 
-    return { id, role };
+    return { id, role, username };
 };
 
 module.exports = {

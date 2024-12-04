@@ -16,9 +16,10 @@ app.use(express.json());
 app.use(cors());
 
 // User endpoints
-const { newUser, login, deleteUser, getUserEmail, getUserNick } = userEndpoints(db);
+const { newUser, login, logout, deleteUser, getUserEmail, getUserNick } = userEndpoints(db);
 app.post('/user', newUser);
 app.post('/user/login', login);
+app.post('/user/logout', logout);
 app.delete('/user/:email', authenticateToken, deleteUser);
 app.get('/user/email', getUserEmail);
 app.get('/user/nick', getUserNick);
