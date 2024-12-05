@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import './Topbar.css'
-import { Link } from 'react-router-dom';
-import { isLoggedIn, getUser, deleteSession, setSession, getToken } from "../../session";
+import './Topbar.css';
+import { Link, useNavigate } from 'react-router-dom';
+import { isLoggedIn, getUser, deleteSession, getToken } from "../../session";
 
 export default function Topbar() {
     const [refresh, setRefresh] = useState(false);
+    const navigate = useNavigate();
 
     const onLogout = async () => {
         try {
@@ -23,19 +24,26 @@ export default function Topbar() {
             const data = await response.json();
             deleteSession();
             console.log('Logout successful:', data);
-            window.location.pathname = '/login';
+            navigate('/login');
         } catch (error) {
             console.error('Error logging out:', error);
         }
     };
 
     useEffect(() => {
-        setRefresh(!refresh);
-    }, [localStorage.getItem('session')]);
+        const handleStorageChange = () => {
+            setRefresh(prev => !prev);
+        };
 
-    return(
+        window.addEventListener('storage', handleStorageChange);
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
+    return (
         <div className="topbar">
-        <div className="topbar-logo">BUS APP</div>
+            <div className="topbar-logo">BUS APP</div>
             <div className="topbar-buttons">
                 {isLoggedIn()
                     ? <>

@@ -1,7 +1,8 @@
+// routes/user.js
+const express = require('express');
+const { authenticateToken, generateToken } = require('../auth');
 const bcrypt = require("bcryptjs");
-const { CreateUserDto, LoginUserDto, LoggedInUserResponseDto, UserDto} = require("../dtos/user-dto");
-const { basicEncode } = require('../auth');
-const { addSession, removeSession } = require('../sessions');
+const { CreateUserDto, LoginUserDto, LoggedInUserResponseDto, UserDto } = require("../dtos/user-dto");
 
 const userEndpoints = (db) => {
     // Endpoint do tworzenia użytkownika
@@ -16,7 +17,9 @@ const userEndpoints = (db) => {
 
         try {
             const hashedPassword = await bcrypt.hash(createUserDto.password, 12);
-            const role = "user";
+            // Ustawienie roli: jeśli użytkownik jest adminem i poda rolę, użyj jej; inaczej ustaw na 'user'
+            const role = req.body.role && req.user.role === 'admin' ? req.body.role : 'user';
+
             const sql = `INSERT INTO user (username, email, password_hash, role) VALUES (?, ?, ?, ?)`;
 
             db.run(sql, [createUserDto.username, createUserDto.email, hashedPassword, role], function(err) {
@@ -47,7 +50,7 @@ const userEndpoints = (db) => {
     const login = async (req, res) => {
         const loginUserDto = new LoginUserDto(req.body);
 
-        // Validate incoming request data
+        // Walidacja danych wejściowych
         try {
             loginUserDto.validate();
         } catch (err) {
@@ -61,26 +64,25 @@ const userEndpoints = (db) => {
                 return res.status(400).send(err.message);
             }
             if (!user) {
-                return res.status(401).send('Invalid email or password.');
+                return res.status(401).send('Nieprawidłowy email lub hasło.');
             }
 
-            // Compare the hashed password
+            // Porównanie zahaszowanego hasła
             const isMatch = await bcrypt.compare(loginUserDto.password, user.password_hash);
             if (!isMatch) {
-                return res.status(401).send('Invalid email or password.');
+                return res.status(401).send('Nieprawidłowy email lub hasło.');
             }
 
-            // Generate token using basicEncode with user ID, role and username
-            const token = basicEncode(user.id, user.role, user.username);
+            // Generowanie tokenu JWT
+            const token = generateToken(user.id, user.role, user.username);
 
-            // Create a response DTO including the token and user details
+            // Tworzenie odpowiedzi z tokenem i danymi użytkownika
             const responseDto = new LoggedInUserResponseDto({
                 token,
                 user: { id: user.id, username: user.username, email: user.email, role: user.role }
             });
 
             try {
-                addSession(token);
                 res.status(200).json(responseDto);
             } catch (err) {
                 res.status(400).send(err.message);
@@ -89,14 +91,7 @@ const userEndpoints = (db) => {
     };
 
     const logout = (req, res) => {
-        const { token } = req.body;
-
-        if (!token) {
-            return res.status(400).json({ message: 'Brak tokenu.' });
-        }
-
-        removeSession(token);
-
+        // W przypadku JWT nie trzeba usuwać sesji po stronie serwera
         res.status(200).json({ message: 'Pomyślnie wylogowano.' });
     };
 
@@ -104,6 +99,7 @@ const userEndpoints = (db) => {
     const deleteUser = (req, res) => {
         const userEmailToDelete = req.params.email;
 
+        // Użyj middleware authenticateToken przed tym endpointem, aby mieć dostęp do req.user
         if (req.user.role !== 'admin') {
             return res.status(403).send('Nie masz uprawnień do usunięcia użytkownika.');
         }
@@ -123,8 +119,8 @@ const userEndpoints = (db) => {
         });
     };
 
-    // Endpoint for getting user email
-    const getUserEmail = async (req, res) => {
+    // Endpoint do pobierania emaila użytkownika
+    const getUserEmail = (req, res) => {
         const { username } = req.body;
 
         if (!username) {
@@ -146,11 +142,11 @@ const userEndpoints = (db) => {
         });
     };
 
-// Endpoint for getting user nick
-    const getUserNick = async (req,res) => {
+    // Endpoint do pobierania nazwy użytkownika
+    const getUserNick = (req, res) => {
         const { email } = req.body;
 
-        if(!email){
+        if (!email) {
             return res.status(400).send('Email jest wymagany.');
         }
 
@@ -169,7 +165,28 @@ const userEndpoints = (db) => {
         });
     };
 
-    return { newUser, login, logout, deleteUser, getUserEmail, getUserNick };
+    // Endpoint do pobierania wszystkich użytkowników
+    const getAllUsers = (req, res) => {
+        if (!req.user) {
+            return res.status(401).send('Nieautoryzowany dostęp.');
+        }
+
+        if (req.user.role !== 'admin') {
+            return res.status(403).send('Nie masz uprawnień do wyświetlania użytkowników.');
+        }
+
+        const sql = `SELECT * FROM user`;
+
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                return res.status(400).send(err.message);
+            }
+
+            res.status(200).json(rows);
+        });
+    };
+
+    return { newUser, login, logout, deleteUser, getUserEmail, getUserNick, getAllUsers };
 };
 
 module.exports = { userEndpoints };

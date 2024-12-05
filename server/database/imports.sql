@@ -207,8 +207,8 @@ INSERT INTO departure_time (id, hour_minute, route_departure_rule_id) VALUES
 ---------------------------------
 -- Users
 INSERT INTO user (username, email, password_hash, role) VALUES
-('admin', 'admin@example.com', 'hashed_password_here', 'admin'),
-('user1', 'user1@example.com', 'hashed_password_here', 'user');
+('admin', 'admin@example.com', 'admin', 'admin'),
+('user1', 'user1@example.com', 'user', 'user');
 
 -- User observations
 INSERT INTO user_observes_city_connection (id, username, departure_city_id, destination_city_id) VALUES

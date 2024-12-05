@@ -1,12 +1,14 @@
-// Login.js
+// src/components/Login.js
 import React, { useState } from 'react';
 import './Login.css';
-import {setSession} from "../../session";
+import { setSession } from "../../session";
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,13 +23,19 @@ export default function Login() {
       });
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Login failed');
       }
 
       const data = await response.json();
       console.log('Login successful:', data);
       setSession(data.user, data.token);
-      window.location.reload();
+      if(data.user.role === 'admin'){
+        navigate('/admin-view');
+      }
+      else{
+        navigate('/');
+      }
     } catch (error) {
       console.error('Error logging in:', error);
       setError('Login failed. Please check your credentials.');
@@ -44,6 +52,7 @@ export default function Login() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="login-form-input"
+        required
       />
       <input
         type="password"
@@ -51,6 +60,7 @@ export default function Login() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         className="login-form-input"
+        required
       />
       <button type="submit" className="login-form-button">Zaloguj</button>
     </form>

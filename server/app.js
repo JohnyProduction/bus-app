@@ -13,16 +13,24 @@ const dotenv = require('dotenv');
 dotenv.config('.');
 
 app.use(express.json());
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:3000', // Zamień na adres Twojego frontendu
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // User endpoints
-const { newUser, login, logout, deleteUser, getUserEmail, getUserNick } = userEndpoints(db);
+const { newUser, login, logout, deleteUser, getUserEmail, getUserNick, getAllUsers } = userEndpoints(db);
 app.post('/user', newUser);
 app.post('/user/login', login);
 app.post('/user/logout', logout);
 app.delete('/user/:email', authenticateToken, deleteUser);
 app.get('/user/email', getUserEmail);
 app.get('/user/nick', getUserNick);
+app.get('/users', authenticateToken, getAllUsers);
 
 // Connection endpoints
 const { search } = connectionEndpoints(db);
