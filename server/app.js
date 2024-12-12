@@ -2,6 +2,7 @@ const { userEndpoints } = require('./routes/user');
 const { departureEndpoints } = require('./routes/departure');
 const { authenticateToken } = require('./auth');
 const { connectionEndpoints } = require('./routes/connection');
+const { userObservesCityConnectionEndpoints } = require('./routes/user-observes-city-connection');
 const { db } = require('./db');
 
 const cors = require('cors');
@@ -16,13 +17,21 @@ app.use(express.json());
 app.use(cors());
 
 // User endpoints
-const { newUser, login, logout, deleteUser, getUserEmail, getUserNick } = userEndpoints(db);
+const { newUser, login, logout, deleteUser, getUserEmail, getUserNick, getAllUsers, changeUserRole } = userEndpoints(db);
 app.post('/user', newUser);
 app.post('/user/login', login);
 app.post('/user/logout', logout);
-app.delete('/user/:email', authenticateToken, deleteUser);
+app.delete('/user/:email', deleteUser);
 app.get('/user/email', getUserEmail);
 app.get('/user/nick', getUserNick);
+app.get('/users', getAllUsers);
+app.put('/user/role', changeUserRole);
+
+// Observed city connection endpoints
+const { observeCityConnection, unobserveCityConnection, getObservedRoutes  } = userObservesCityConnectionEndpoints(db);
+app.post('/user/observed-route',  observeCityConnection);
+app.delete('/user/observed-route', unobserveCityConnection);
+app.get('/user/observed-routes', getObservedRoutes);
 
 // Connection endpoints
 const { search } = connectionEndpoints(db);

@@ -1,0 +1,124 @@
+/* Ogólny kontener */
+.observed-routes-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    max-width: 80%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Tytuł */
+  .observed-routes-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Lista ulubionych tras */
+  .observed-routes-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+  
+  /* Element listy */
+  .observed-routes-item {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  .observed-routes-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Przyciski tras */
+  .observed-routes-button {
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .observed-routes-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Szczegóły wybranej trasy */
+  .selected-route-container {
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .selected-route-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  /* Lista połączeń dla wybranej trasy */
+  .selected-route-connections {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .selected-route-connection-item {
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .selected-route-connection-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Komunikaty o błędach i ładowaniu */
+  .observed-routes-error {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .observed-routes-loading {
+    color: #555;
+    font-style: italic;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  /* Brak wyników */
+  .no-results {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+    margin-top: 20px;
+  }
+  

@@ -5,6 +5,7 @@ import RegisterForm from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import AdminView from "./pages/AdminView/AdminView";
+import ObservedRoutesForm from "./components/Observe/Observe";
 export default function Routers() {
   const location = useLocation();
 
@@ -14,6 +15,7 @@ export default function Routers() {
       <Route exact path="/login" Component={Login} />
       <Route exact path="/register" Component={RegisterForm} />
       <Route exact path="/admin-view" Component={AdminView} />
+      <Route exact path="/favourite" Component={ObservedRoutesForm} />
     </Routes>
   );
 }

@@ -32,21 +32,30 @@ export default function Topbar() {
     useEffect(() => {
         setRefresh(!refresh);
     }, [localStorage.getItem('session')]);
+  
 
     return(
         <div className="topbar">
         <div className="topbar-logo">BUS APP</div>
             <div className="topbar-buttons">
-                {isLoggedIn()
-                    ? <>
-                        {getUser().username}
-                        <button onClick={onLogout}>Wyloguj</button>
+            {isLoggedIn() ? (
+                    <>
+                        {getUser().role === "admin" && (
+                            <>
+                            <Link to="/admin-view" className="topbar-button">Admin Panel</Link>
+                            <Link to="/favourite" className="topbar-button">Ulubione</Link>
+                            </>
+                        )}
+                        <button onClick={onLogout} className="topbar-button">Wyloguj</button>
                     </>
-                    : <>
+                ) : (
+                    <>
                         <Link to="/login" className="topbar-button">Login</Link>
                         <Link to="/register" className="topbar-button">Register</Link>
                     </>
-                }
+                )}
+                 <Link to="/" className="topbar-button">Home</Link>
+                
             </div>
         </div>
     );

@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import './Login.css';
 import {setSession} from "../../session";
 
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +29,7 @@ export default function Login() {
       const data = await response.json();
       console.log('Login successful:', data);
       setSession(data.user, data.token);
-      window.location.reload();
+      window.location.href ="/";
     } catch (error) {
       console.error('Error logging in:', error);
       setError('Login failed. Please check your credentials.');

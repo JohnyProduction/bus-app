@@ -15,7 +15,7 @@ const runQuery = (db, query, params) => {
 const connectionEndpoints = (db) => {
     const search = async (req, res) => {
         try {
-            console.log('Received search request:', req.query);
+            //console.log('Received search request:', req.query);
 
             // Validate input with DTO
             const searchDto = new ConnectionSearchDto({
@@ -26,12 +26,12 @@ const connectionEndpoints = (db) => {
                 endTime: req.query.endTime
             });
             searchDto.validate();
-            console.log('Search DTO validated:', searchDto);
+            //console.log('Search DTO validated:', searchDto);
 
             // First check if cities exist
             const citiesQuery = `SELECT id, name FROM city WHERE name IN (?, ?)`;
             const cities = await runQuery(db, citiesQuery, [searchDto.startCity, searchDto.endCity]);
-            console.log('Found cities:', cities);
+            //console.log('Found cities:', cities);
 
             if (cities.length !== 2) {
                 return res.status(404).json({
@@ -54,7 +54,7 @@ const connectionEndpoints = (db) => {
                 ':filter_end_time': searchDto.endTime
             });
 
-            console.log(`Found ${connections.length} connections`);
+            //console.log(`Found ${connections.length} connections`);
 
             // If no connections found, let's check why
             if (connections.length === 0) {
@@ -72,7 +72,7 @@ const connectionEndpoints = (db) => {
                     WHERE c_start.name = ? AND c_end.name = ?
                 `, [searchDto.startCity, searchDto.endCity]);
                 
-                console.log('Route check results:', routeCheck);
+                //console.log('Route check results:', routeCheck);
 
                 // Check date rules
                 const dateCheck = await runQuery(db, `
@@ -91,7 +91,7 @@ const connectionEndpoints = (db) => {
                     FROM route_departure_rule rd
                 `, [searchDto.departureDate, searchDto.departureDate]);
 
-                console.log('Date validation results:', dateCheck);
+                //console.log('Date validation results:', dateCheck);
             }
 
             const responseDto = {

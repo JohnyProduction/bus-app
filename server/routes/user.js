@@ -104,10 +104,6 @@ const userEndpoints = (db) => {
     const deleteUser = (req, res) => {
         const userEmailToDelete = req.params.email;
 
-        if (req.user.role !== 'admin') {
-            return res.status(403).send('Nie masz uprawnień do usunięcia użytkownika.');
-        }
-
         const sql = `DELETE FROM user WHERE email = ?`;
 
         db.run(sql, [userEmailToDelete], function(err) {
@@ -169,7 +165,40 @@ const userEndpoints = (db) => {
         });
     };
 
-    return { newUser, login, logout, deleteUser, getUserEmail, getUserNick };
+    // Endpoint do pobierania wszystkich użytkowników
+    const getAllUsers = (req, res) => {
+        const sql = `SELECT * FROM user`;
+
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                return res.status(400).send(err.message);
+            }
+
+            res.status(200).json(rows);
+        });
+    };
+    const changeUserRole = (req, res) => {
+        const { email, newRole } = req.body;
+
+        if (!email || !newRole) {
+            return res.status(400).send('Email i nowa rola są wymagane.');
+        }
+
+        const sql = `UPDATE user SET role = ? WHERE email = ?`;
+
+        db.run(sql, [newRole, email], function(err) {
+            if (err) {
+                return res.status(400).send(err.message);
+            }
+
+            if (this.changes === 0) {
+                return res.status(404).send('Użytkownik nie został znaleziony.');
+            }
+
+            res.status(200).send('Rola użytkownika została zaktualizowana.');
+        });
+    };
+    return { newUser, login, logout, deleteUser, getUserEmail, getUserNick,getAllUsers,changeUserRole };
 };
 
 module.exports = { userEndpoints };
